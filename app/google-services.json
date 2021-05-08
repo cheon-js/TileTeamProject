@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "94881856105",
+    "project_id": "tileteam-168ce",
+    "storage_bucket": "tileteam-168ce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:94881856105:android:0dcebbdb212fb2424200f8",
+        "android_client_info": {
+          "package_name": "com.example.tileteamproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "94881856105-kgi4s9h2vt9pt9doipee6pcm4619gg1d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tileteamproject",
+            "certificate_hash": "2fc8f6f578ebe360da6a7af7035f18fa0210dddb"
+          }
+        },
+        {
+          "client_id": "94881856105-dmdppp0p5938shntk9clnj0c254r0j8u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAC4BvJHNcw2eE2dDpDsSpml1Y8Let9eY0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "94881856105-dmdppp0p5938shntk9clnj0c254r0j8u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

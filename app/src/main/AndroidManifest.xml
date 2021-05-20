@@ -14,13 +14,14 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDcrcxETeqhddOvfx4i3LRV1dXL0uAjmBc" />
-        <activity android:name=".GPS_AND_DB_Activity">
+        <activity android:name=".Google_Sign_In">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".GPS_AND_DB_Activity" />
     </application>
 
 </manifest>

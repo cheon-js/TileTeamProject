@@ -58,8 +58,8 @@
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/btn_googleButton"
-        android:layout_width="175dp"
-        android:layout_height="59dp"
+        android:layout_width="375dp"
+        android:layout_height="65dp"
         android:layout_marginBottom="88dp"
         app:buttonSize="icon_only"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,13 +37,14 @@ public class MainActivity extends AppCompatActivity {
         createRequest();
         mAuth = FirebaseAuth.getInstance();
 
-
         findViewById(R.id.btn_googleButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 signIn();
             }
         });
+
+
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter.isEnabled()) {
             // 블루투스 관련 실행 진행

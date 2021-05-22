@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
@@ -67,7 +69,16 @@ public class loginAfter extends AppCompatActivity {
                 return true;
             }
         });
+        Button button=findViewById(R.id.btn_map);
+        button.setOnClickListener(new View.OnClickListener() {//버튼 이벤트 처리
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(),GPS_AND_DB_Activity.class);
+                startActivity(intent);
+            }
+        });
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -79,4 +90,5 @@ public class loginAfter extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

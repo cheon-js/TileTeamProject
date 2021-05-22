@@ -25,12 +25,23 @@
             <TextView
                 android:id="@+id/toolbar_title"
                 android:text="어디 있노?"
-                android:textStyle="bold"
+                android:fontFamily="@font/bm_font"
+                android:textStyle="normal"
                 android:textColor="#000000"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center" />
         </androidx.appcompat.widget.Toolbar>
+
+        <Button
+            android:id="@+id/btn_map"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100sp"
+            android:layout_marginLeft="160sp"
+            android:layout_gravity="center"
+            android:text="MAP" />
+
 
     </RelativeLayout>
 

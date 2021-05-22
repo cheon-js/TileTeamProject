@@ -24,7 +24,6 @@ public class GPS_AND_DB_Activity extends AppCompatActivity implements OnMapReady
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference test = database.getReference("test");
         test.setValue("test");

@@ -14,7 +14,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDcrcxETeqhddOvfx4i3LRV1dXL0uAjmBc" />
-        <activity android:name=".Google_Sign_In">
+        <activity android:name=".IntroActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,6 +22,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".GPS_AND_DB_Activity" />
+        <activity android:name=".loginAfter"/>
+        <activity android:name=".MainActivity"/>
     </application>
 
 </manifest>

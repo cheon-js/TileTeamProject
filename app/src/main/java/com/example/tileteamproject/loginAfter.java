@@ -57,7 +57,6 @@ public class loginAfter extends AppCompatActivity implements OnMapReadyCallback 
         test.setValue("test");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(false); // 기존 title 지우기
         actionBar.setDisplayHomeAsUpEnabled(true); // 네비게이션 버튼 만들기
@@ -78,6 +77,9 @@ public class loginAfter extends AppCompatActivity implements OnMapReadyCallback 
 
                 if(id == R.id.account){
                     Toast.makeText(context, title + ": 마이페이지 이동 ", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(),MyPage.class);
+                    startActivity(intent);
+
                 }
                 else if(id == R.id.setting){
                     Toast.makeText(context, title + ": 설정 정보를 확인합니다.", Toast.LENGTH_SHORT).show();

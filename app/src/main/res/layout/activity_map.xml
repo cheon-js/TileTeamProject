@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    >
 
 
     <androidx.drawerlayout.widget.DrawerLayout
@@ -48,7 +49,7 @@
                 android:layout_marginTop="60dp"
                 android:background="@drawable/round_border"
                 android:orientation="horizontal"
-                android:paddingTop="52dp">
+                android:paddingTop="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -60,131 +61,39 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="15dp"
+                        android:layout_height="8dp"
                         android:layout_weight="1"
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/tv_setLocStart"
+                            android:id="@+id/tv_moveTrc"
                             android:layout_width="88dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:clickable="true"
-                            android:text="현위치를 출발지로"
-                            android:textColor="@drawable/text_click"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/bm_font"
+                            android:text="트래커 위치 보기"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+
+                            android:textStyle="normal" />
 
                         <TextView
                             android:id="@+id/tv_moveLoc"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
+                            android:layout_height="30dp"
                             android:layout_weight="1"
                             android:clickable="true"
+                            android:fontFamily="@font/bm_font"
                             android:gravity="right"
+
                             android:text="현위치 보기"
-                            android:textColor="@drawable/text_click"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
+                            android:textColor="@color/black"
+
+                            android:textSize="18sp"
+                            android:textStyle="normal" />
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="21dp"
-                        android:layout_weight="1"
-                        android:orientation="horizontal">
-
-                        <FrameLayout
-                            android:layout_width="300dp"
-                            android:layout_height="50dp"
-                            android:layout_weight="1">
-
-                            <EditText
-                                android:id="@+id/edit_start"
-                                android:layout_width="320dp"
-                                android:layout_height="45dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/round_border_text"
-                                android:ems="10"
-                                android:focusable="true"
-                                android:focusableInTouchMode="true"
-                                android:hint="출발지를 입력하세요"
-                                android:inputType="textPersonName"
-                                android:paddingLeft="10dp"
-                                android:selectAllOnFocus="true" />
-
-                            <ImageView
-                                android:id="@+id/cancel_st"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:layout_gravity="right|center_vertical"
-                                android:layout_margin="10dp"
-                                android:layout_weight="1"
-                                app:srcCompat="@drawable/cancel" />
-
-                        </FrameLayout>
-
-
-                        <Button
-                            android:id="@+id/btn_start"
-                            android:layout_width="45dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:clickable="true"
-                            android:text="검색"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            app:backgroundTint="#5559b4" />
-
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="22dp"
-                        android:layout_weight="1"
-                        android:orientation="horizontal">
-
-                        <FrameLayout
-                            android:layout_width="300dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
-
-                            <EditText
-                                android:id="@+id/edit_end"
-                                android:layout_width="320dp"
-                                android:layout_height="45dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/round_border_text"
-                                android:ems="10"
-                                android:focusable="true"
-                                android:focusableInTouchMode="true"
-                                android:hint="도착지를 입력하세요"
-                                android:inputType="textPersonName"
-                                android:paddingLeft="10dp"
-                                android:selectAllOnFocus="true" />
-
-                            <ImageView
-                                android:id="@+id/cancel_fin"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:layout_gravity="right|center_vertical"
-                                android:layout_margin="10dp"
-                                android:layout_weight="1"
-                                app:srcCompat="@drawable/cancel" />
-
-                        </FrameLayout>
-
-                        <Button
-                            android:id="@+id/btn_end"
-                            android:layout_width="45dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="검색"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            app:backgroundTint="#5559b4" />
-                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -192,14 +101,6 @@
                         android:layout_weight="1"
                         android:orientation="vertical">
 
-                        <Spinner
-                            android:id="@+id/spinner_field"
-                            android:layout_width="match_parent"
-                            android:layout_height="45dp"
-                            android:background="@drawable/round_border_text"
-                            android:gravity="right"
-                            android:textColor="@color/black"
-                            android:textSize="20sp" />
 
                         <Button
                             android:id="@+id/btn_draw"
@@ -209,12 +110,11 @@
                             android:text="길찾기"
                             android:textSize="16sp"
                             android:textStyle="bold"
-                            app:backgroundTint="#5559b4" />
+                            app:backgroundTint="#16161C" />
                     </LinearLayout>
                 </LinearLayout>
 
             </LinearLayout>
-
             <FrameLayout
                 android:layout_marginTop="350dp"
                 android:layout_width="match_parent"
@@ -226,12 +126,6 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <ListView
-                        android:id="@+id/listView"
-                        android:layout_width="match_parent"
-                        android:layout_height="292dp"
-                        android:layout_gravity="left|top"
-                        android:background="#FFFFFFFF" />
 
                 </LinearLayout>
 
@@ -239,6 +133,7 @@
 
 
         </RelativeLayout>
+
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"

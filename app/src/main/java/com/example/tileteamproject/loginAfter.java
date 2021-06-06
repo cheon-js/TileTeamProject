@@ -1,5 +1,10 @@
 package com.example.tileteamproject;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -15,6 +20,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.text.Layout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -30,55 +37,39 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.skt.Tmap.TMapData;
 import com.skt.Tmap.TMapGpsManager;
 import com.skt.Tmap.TMapMarkerItem;
+import com.skt.Tmap.TMapMarkerItem2;
 import com.skt.Tmap.TMapPOIItem;
 import com.skt.Tmap.TMapPoint;
 import com.skt.Tmap.TMapPolyLine;
 import com.skt.Tmap.TMapView;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
-
-//메인화면
-public class loginAfter extends AppCompatActivity  {
-
+public class loginAfter extends AppCompatActivity{
     private TMapGpsManager tMapGps = null;
     private TMapView tMapView;
     private double lat;
     private double lon;
     private double realdistance = 0; //거리값
-    private static String AppKey = "l7xx78e50b11dae24106a265f873c8a1558f";
+    private static String AppKey = "l7xx2b1c5cd91b914c2c9c80aab1109ae5d3";
     private long backKeyPressedTime = 0; // 마지막으로 뒤로 가기 버튼을 눌렀던 시간 저장
     private Toast toast; // 첫 번째 뒤로 가기 버튼을 누를 때 표시
     private String[] item;
@@ -93,7 +84,7 @@ public class loginAfter extends AppCompatActivity  {
      - 10: 최단거리+유/무료
      - 12: 이륜차도로우선 (일반도로가 없는 경우 자동차 전용도로로 안내 할 수 있습니다.)
      - 19: 교통최적+어린이보호구역 회피
-     */
+    */
     ListView listView;
     EditText editStart;
     EditText editEnd;
@@ -108,42 +99,27 @@ public class loginAfter extends AppCompatActivity  {
     private boolean locationState = true; //현위치로 이동 여부
     private boolean startBtnState = false;
     private boolean endBtnState = false;
-    private TMapPoint tMapPointStart = null;
-    private TMapPoint tMapPointEnd = null;
-    //private TMapPoint tMapPointStart = new TMapPoint(35.17241886016579, 129.1263765979288);//영상물 등급위원회
-    //private TMapPoint tMapPointEnd = new TMapPoint(35.17127425152002, 129.12722778443444);//영화의 전당
-
-
-    private static final String TAG = "GoogleActivity";
-    private GoogleSignInClient mGoogleSignInClient;
-    private final static int RC_SIGN_IN = 123;
-    private FirebaseAuth mAuth;
-
-    private DrawerLayout mDrawerLayout;
-    private Context context = this;
-
+//    private TMapPoint tMapPointStart = null;
+//    private TMapPoint tMapPointEnd = null;
+    private TMapPoint tMapPointStart = new TMapPoint(35.14491598554919, 129.03571818298877);//영상물 등급위원회
+    private TMapPoint tMapPointEnd = new TMapPoint(35.15222715129512, 129.03291744152403);//영화의 전당
+//35.15222715129512, 129.03291744152403 스타팰리스
+//35.14491598554919, 129.03571818298877 정보관
+private DrawerLayout mDrawerLayout;
+private Context context = this;
     @SuppressLint("ClickableViewAccessibility")
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE); //키보드 내리기
-        editStart = (EditText) findViewById(R.id.edit_start);
-        editEnd = (EditText) findViewById(R.id.edit_end);
-        listView = (ListView) findViewById(R.id.listView);
+
         layout = (LinearLayout) findViewById(R.id.tmap);
         mAdapter = new ArrayAdapter<POI>(this, android.R.layout.simple_list_item_1);
-        listView.setAdapter(mAdapter);
-        listView.setVisibility(View.GONE); //listview 안보이게
-        //SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.tmap);
 
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference test = database.getReference("test");
-        test.setValue("test");
-        //터치하면 텍스트 전체 선택
-        editStart.selectAll();
-        editEnd.selectAll();
+
 
         //상태바 투명 & 아이콘 회색
         setStateBar();
@@ -184,103 +160,49 @@ public class loginAfter extends AppCompatActivity  {
             public void onProviderEnabled(String provider) { }
             public void onStatusChanged(String provider, int status, Bundle extras) { }
         };
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, mLocationListener);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, mLocationListener);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        ActionBar actionBar = getSupportActionBar();
-//        actionBar.setDisplayShowTitleEnabled(false); // 기존 title 지우기
-//        actionBar.setDisplayHomeAsUpEnabled(true); // 네비게이션 버튼 만들기
-//        actionBar.setHomeAsUpIndicator(R.drawable.list_imag2); //네비게이션 버튼 이미지
-        //버튼 클릭 이벤트
-        /* 출발지 search 버튼 */
-        Button btnStart = (Button) findViewById(R.id.btn_start);
-        btnStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //startBtnState = true;
-                keyword = editStart.getText().toString();
-                searchPOI();
-                imm.hideSoftInputFromWindow(editStart.getWindowToken(), 0); //키보드 내리기
-            }
-        });
-        editStart.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch(event.getAction()) {
-                    case MotionEvent.ACTION_DOWN: {
-                        //터치했을 때의 이벤트
-                        startBtnState = true;
-                        break;
-                    }
-                }
-                return false;
-            }
-        });
-        ImageView cancelSta = (ImageView) findViewById(R.id.cancel_st);
-        cancelSta.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                tMapView.removeTMapPath();//경로 제거
-                editStart.setText(null);//text 삭제
-                tMapPointStart = null; //출발지 초기화
-                listView.setVisibility(View.GONE); //listview 숨기기
-            }
-        });
-        /* 도착지 search 버튼 */
-        Button btnEnd = (Button) findViewById(R.id.btn_end);
-        btnEnd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //endBtnState = true;
-                keyword = editEnd.getText().toString();
-                searchPOI();
-                imm.hideSoftInputFromWindow(editEnd.getWindowToken(), 0); //키보드 내리기
-            }
-        });
-        /* 도착지 editText 클릭이벤트 */
-        editEnd.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch(event.getAction()) {
-                    case MotionEvent.ACTION_DOWN: {
-                        //터치했을 때의 이벤트
-                        endBtnState = true;
-                        break;
-                    }
-                }
-                return false;
-            }
-        });
-        /* 도착지 text 삭제 및 경로 제거 */
-        ImageView cancelFin = (ImageView) findViewById(R.id.cancel_fin);
-        cancelFin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                tMapView.removeTMapPath();//경로 제거
-                editEnd.setText(null);//text 삭제
-                tMapPointEnd = null; //도착지 초기화
-                listView.setVisibility(View.GONE); //listview 숨기기
-            }
-        });
-        /* 현위치를 출발지로 설정 버튼 */
-        TextView tvSetLocStart = (TextView)  findViewById(R.id.tv_setLocStart);
+
+
+
+
+
+
+//        /* 도착지 text 삭제 및 경로 제거 */
+//        ImageView cancelFin = (ImageView) findViewById(R.id.cancel_fin);
+//        cancelFin.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                tMapView.removeTMapPath();//경로 제거
+//                editEnd.setText(null);//text 삭제
+//                tMapPointEnd = null; //도착지 초기화
+//                listView.setVisibility(View.GONE); //listview 숨기기
+//            }
+//        });
+        /* 트래커 위치 확인 설정 버튼 */
+        TextView tvSetLocStart = (TextView)  findViewById(R.id.tv_moveTrc);
         tvSetLocStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 TMapPoint tpoint = tMapView.getLocationPoint();
-                double Latitude_ = tpoint.getLatitude(); //위도
-                double Longitude_ = tpoint.getLongitude(); //경도
-                String address_ = getCurrentAddress(Latitude_,Longitude_); //주소
+//                double Latitude_ = tpoint.getLatitude(); //위도
+//                double Longitude_ = tpoint.getLongitude(); //경도
+                //35.144963769997695, 129.03580991327593
+//                double Latitude_ = 129.03580991327593; //위도
+//                double Longitude_ = 35.144963769997695; //경도
+                double Latitude_ = 35.144963769997695; //위도
+                double Longitude_ = 129.03580991327593; //경도
+                tMapView.setIconVisibility(true);
 
                 tMapView.setCenterPoint(Longitude_, Latitude_); //현위치를 지도 중심
 
-                LocationManager lm = (LocationManager)getSystemService(Context. LOCATION_SERVICE);
-                editStart.setText(address_); //장소명 setText
-                tMapPointStart = tMapView.getLocationPoint(); //출발지에 현위치 좌표 넣기
-                tMapView.removeAllMarkerItem(); //마커 안보이게
+//                LocationManager lm = (LocationManager)getSystemService(Context. LOCATION_SERVICE);
+//                tMapPointStart = tMapView.getLocationPoint(); //출발지에 현위치 좌표 넣기
+//                tMapView.removeAllMarkerItem(); //마커 안보이게
             }
         });
         /* 현위치 보기 버튼 */
@@ -301,129 +223,84 @@ public class loginAfter extends AppCompatActivity  {
             public void onClick(View view) {
                 tMapView.removeAllMarkerItem(); //마커 안보이게
                 //출발지 or 도착지가 null일 때
-                if (tMapPointStart != null && tMapPointEnd != null) {
+//                if (tMapPointStart != null && tMapPointEnd != null) {
                     drawCashPath(tMapPointStart, tMapPointEnd);
-                } else if (tMapPointStart == null && tMapPointEnd != null) {
-                    Toast.makeText(getApplicationContext(), "출발지를 입력해주세요", Toast.LENGTH_SHORT).show();
-                } else if (tMapPointStart != null && tMapPointEnd == null) {
-                    Toast.makeText(getApplicationContext(), "도착지를 입력해주세요", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "출발지와 도착지를 입력해주세요", Toast.LENGTH_SHORT).show();
-                }
+//                } else if (tMapPointStart == null && tMapPointEnd != null) {
+//                    Toast.makeText(getApplicationContext(), "출발지를 입력해주세요", Toast.LENGTH_SHORT).show();
+//                } else if (tMapPointStart != null && tMapPointEnd == null) {
+//                    Toast.makeText(getApplicationContext(), "도착지를 입력해주세요", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    Toast.makeText(getApplicationContext(), "출발지와 도착지를 입력해주세요", Toast.LENGTH_SHORT).show();
+//                }
+
             }
         });
 
-        //listview 클릭 이벤트
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                POI poi = (POI) listView.getItemAtPosition(position);
-                moveMap(poi.item.getPOIPoint().getLatitude(), poi.item.getPOIPoint().getLongitude());
-                lat = poi.item.getPOIPoint().getLatitude();
-                lon = poi.item.getPOIPoint().getLongitude();
-                //Log.e("선택된 좌표", "lat : " + String.valueOf(lat) + " lon : " +lon);
-
-                if (startBtnState == true) { //출발지 선택
-                    tMapPointStart = new TMapPoint(poi.item.getPOIPoint().getLatitude(), poi.item.getPOIPoint().getLongitude());
-                    startBtnState = false;
-                    editStart.setText(poi.toString()); //장소명 setText
-                    editStart.clearFocus(); //포커스 없앰
-                } else if (endBtnState == true) { //도착지 선택
-                    tMapPointEnd = new TMapPoint(poi.item.getPOIPoint().getLatitude(), poi.item.getPOIPoint().getLongitude());
-                    endBtnState = false;
-                    editEnd.setText(poi.toString()); //장소명 setText
-                    editEnd.clearFocus(); //포커스 없앰
-                }
-
-                listView.setVisibility(View.GONE); //주소 선택 후 listview 안보이게
-            }
-        });
-
-        //우선 경로 설정 부분
-        item = new String[]{"원하는 경로를 선택해주세요 (추천경로)","추천경로", "무료도로", "최소시간" , "편한길 우선",
-                "고속도로 우선", "최단거리", "이륜차 통행가능", "어린이 보호"};
-        spinner = (Spinner) findViewById(R.id.spinner_field);
-        //문자열 배열과 기본 스피너 레이아웃을 사용하여 ArrayAdapter 만들기
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, item);
-        //선택목록이 나타날때 사용할 레이아웃을 지정
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //스피너에 어댑터 적용
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
-
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //Toast.makeText(getApplicationContext(), categories[position], Toast.LENGTH_SHORT).show();
-                if(spinner.getSelectedItemPosition() > 0){
-                    //선택된 항목
-                    routeNum = spinner.getSelectedItemPosition();
-                    if(routeNum == 1) {choiceRoute = 0;}
-                    else if(routeNum == 2) {choiceRoute = 1;}
-                    else if(routeNum == 3) {choiceRoute = 2;}
-                    else if(routeNum == 4) {choiceRoute = 3;}
-                    else if(routeNum == 5) {choiceRoute = 4;}
-                    else if(routeNum == 6) {choiceRoute = 10;}
-                    else if(routeNum == 7) {choiceRoute = 12;}
-                    else if(routeNum == 8) {choiceRoute = 19;}
-                    Log.v("알림",routeNum + spinner.getSelectedItem().toString()+ "is selected");
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                //choiceRoute = 0;
-            }
-        });
+//        //listview 클릭 이벤트
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+//                POI poi = (POI) listView.getItemAtPosition(position);
+//                moveMap(poi.item.getPOIPoint().getLatitude(), poi.item.getPOIPoint().getLongitude());
+//                lat = poi.item.getPOIPoint().getLatitude();
+//                lon = poi.item.getPOIPoint().getLongitude();
+//                //Log.e("선택된 좌표", "lat : " + String.valueOf(lat) + " lon : " +lon);
+//
+//                if (startBtnState == true) { //출발지 선택
+//                    tMapPointStart = new TMapPoint(poi.item.getPOIPoint().getLatitude(), poi.item.getPOIPoint().getLongitude());
+//                    startBtnState = false;
+//                    editStart.setText(poi.toString()); //장소명 setText
+//                    editStart.clearFocus(); //포커스 없앰
+//                } else if (endBtnState == true) { //도착지 선택
+//                    tMapPointEnd = new TMapPoint(poi.item.getPOIPoint().getLatitude(), poi.item.getPOIPoint().getLongitude());
+//                    endBtnState = false;
+//                    editEnd.setText(poi.toString()); //장소명 setText
+//                    editEnd.clearFocus(); //포커스 없앰
+//                }
+//
+//                listView.setVisibility(View.GONE); //주소 선택 후 listview 안보이게
+//            }
+//        });
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-       NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-       navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-           @Override
-           public boolean onNavigationItemSelected(MenuItem menuItem) {
-             menuItem.setChecked(true);
-              mDrawerLayout.closeDrawers();
-
-              int id = menuItem.getItemId();
-             String title = menuItem.getTitle().toString();
-
-              if(id == R.id.account){
-                  Toast.makeText(context, title + ": 마이페이지 이동 ", Toast.LENGTH_SHORT).show();
-                  Intent intent = new Intent(getApplicationContext(),MyPage.class);
-                  startActivity(intent);
-
-             }
-              else if(id == R.id.setting){
-                 Toast.makeText(context, title + ": 설정 정보를 확인합니다.", Toast.LENGTH_SHORT).show();
-             }
-             else if(id == R.id.logout){
-                  Toast.makeText(context,   "로그아웃 후 시작화면으로 이동합니다.  ", Toast.LENGTH_SHORT).show();
-                signOut();
-                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                 startActivity(intent);
-              }
-             else if(id == R.id.butt) {
-                 Toast.makeText(context, title + " : 알림 음량 조절", Toast.LENGTH_SHORT).show();
-                  Intent intent = new Intent(getApplicationContext(), test.class);
-                  startActivity(intent);
-             }
-             return true;
-          }
-
-          private void signOut() {
-              FirebaseAuth.getInstance().signOut();
-            }
-       });
-
-
-       /* Button button=findViewById(R.id.btn_map);
-        button.setOnClickListener(new View.OnClickListener() {//버튼 이벤트 처리
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(),GPS_AND_DB_Activity.class);
-                startActivity(intent);
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                menuItem.setChecked(true);
+                mDrawerLayout.closeDrawers();
+
+
+
+                int id = menuItem.getItemId();
+                String title = menuItem.getTitle().toString();
+
+                if(id == R.id.account){
+                    Toast.makeText(context, title + ": 마이페이지 이동 ", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(),MyPage.class);
+                    startActivity(intent);
+                }
+                else if(id == R.id.setting){
+                    Toast.makeText(context, title + ": 설정 정보를 확인합니다.", Toast.LENGTH_SHORT).show();
+                }
+                else if(id == R.id.logout){
+                    Toast.makeText(context,   "로그아웃 후 시작화면으로 이동합니다.  ", Toast.LENGTH_SHORT).show();
+                    signOut();
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+                }
+                else if(id == R.id.butt) {
+                    Toast.makeText(context, title + " : 알림 음량 조절", Toast.LENGTH_SHORT).show();
+                }
+                return true;
             }
-        });*/
-    }
+            private void signOut() {
+                FirebaseAuth.getInstance().signOut();
+            }
+        });
+
+    } // -- onCreate()
+
 
 
     //상태바 투명 & 아이콘 회색 설정 함수
@@ -478,36 +355,9 @@ public class loginAfter extends AppCompatActivity  {
         });
     }
 
+
     //주소 검색
-    private void searchPOI() {
-        TMapData data = new TMapData();
-        listView.setVisibility(View.VISIBLE); //listview 보이게
 
-        if (!TextUtils.isEmpty(keyword)) {
-            data.findAllPOI(keyword, new TMapData.FindAllPOIListenerCallback() {
-                @Override
-                public void onFindAllPOI(final ArrayList<TMapPOIItem> arrayList) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            tMapView.removeAllMarkerItem();
-                            mAdapter.clear();
-
-                            for (TMapPOIItem poi : arrayList) {
-                                addMarker(poi);
-                                mAdapter.add(new POI(poi));
-                            }
-
-                            if (arrayList.size() > 0) {
-                                TMapPOIItem poi = arrayList.get(0);
-                                moveMap(poi.getPOIPoint().getLatitude(), poi.getPOIPoint().getLongitude());
-                            }
-                        }
-                    });
-                }
-            });
-        }
-    }
 
     //마커 표시 함수
     public void addMarker(TMapPOIItem poi) {
@@ -521,6 +371,7 @@ public class loginAfter extends AppCompatActivity  {
         item.setCanShowCallout(true);
         tMapView.addMarkerItem(poi.getPOIID(), item);
     }
+
 
     //해당 좌표로 지도 이동 함수
     private void moveMap(double lat, double lng) {
@@ -569,16 +420,5 @@ public class loginAfter extends AppCompatActivity  {
             finish();
         }
     }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:{ // 왼쪽 상단 버튼 눌렀을 때
-                mDrawerLayout.openDrawer(GravityCompat.START);
-                return true;
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
 
 }

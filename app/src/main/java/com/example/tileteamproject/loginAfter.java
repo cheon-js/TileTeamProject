@@ -1,5 +1,6 @@
 package com.example.tileteamproject;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -43,8 +44,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.skt.Tmap.TMapData;
 import com.skt.Tmap.TMapGpsManager;
 import com.skt.Tmap.TMapMarkerItem;
@@ -57,8 +65,11 @@ import com.skt.Tmap.TMapView;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -107,8 +118,12 @@ public class loginAfter extends AppCompatActivity{
 //35.14491598554919, 129.03571818298877 정보관
 private DrawerLayout mDrawerLayout;
 private Context context = this;
+    private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase,ref;
+    private final ArrayList<Integer> list = new ArrayList<>();
     @SuppressLint("ClickableViewAccessibility")
     @Override
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,6 +132,10 @@ private Context context = this;
 
         layout = (LinearLayout) findViewById(R.id.tmap);
         mAdapter = new ArrayAdapter<POI>(this, android.R.layout.simple_list_item_1);
+
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        delete();
 
 
 
@@ -184,7 +203,7 @@ private Context context = this;
 //            }
 //        });
         /* 트래커 위치 확인 설정 버튼 */
-        TextView tvSetLocStart = (TextView)  findViewById(R.id.tv_moveTrc);
+        TextView tvSetLocStart = (TextView)  findViewById(R.id.moveTrc);
         tvSetLocStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -419,6 +438,44 @@ private Context context = this;
         if (System.currentTimeMillis() <= backKeyPressedTime + 2500) {
             finish();
         }
+    }
+
+    public void delete(){
+        long now = System.currentTimeMillis();
+        Date mDate = new Date(now);
+        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyyMMdd");
+        String time = simpleDate.format(mDate);
+
+
+        GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(this);
+        String delname = signInAccount.getDisplayName();
+        ref = FirebaseDatabase.getInstance().getReference(delname);//delname 손건
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
+                for (DataSnapshot snapshot : datasnapshot.getChildren()) {
+                    String data = snapshot.getKey();//data 값이 위도 123123 경도 123123 String 형식이라 값을 못받음
+                    int data2 = Integer.parseInt(data);
+                    list.add(data2);
+                }
+                int realdata = Integer.parseInt(time);
+                int Mdata = realdata-3;
+
+                Iterator iterator = list.iterator();
+                while (iterator.hasNext()){
+                    int ttime = (int) iterator.next();
+                    if(ttime < Mdata){
+                        String deletedata = Integer.toString(ttime);
+                        mDatabase.child(delname).child(deletedata).removeValue();
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        //mDatabase.child(delname).child(time).removeValue();
+
     }
 
 }

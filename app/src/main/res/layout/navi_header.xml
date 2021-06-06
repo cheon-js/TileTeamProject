@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#8F000000"
+    android:background="#202122"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
     android:orientation="vertical"
     android:gravity="bottom">
@@ -12,9 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:textSize="20dp"
+        android:textSize="19dp"
         android:gravity="center_horizontal"
         android:text="반갑습니다"
+        android:textColor="@color/white"
+        android:fontFamily="@font/bm_font"
         android:textStyle="bold"
 
         />
@@ -23,8 +24,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=" 당신의 소중한 물건을 관리하세요."
+        android:fontFamily="@font/bm_font"
+        android:textColor="@color/white"
         android:textSize="19dp"
-        android:gravity="center_vertical"
+        android:gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 

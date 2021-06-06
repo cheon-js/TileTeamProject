@@ -26,10 +26,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GPS_AND_DB_Activity" />
         <activity android:name=".loginAfter"/>
         <activity android:name=".MainActivity"/>
         <activity android:name=".MyPage"/>
+        <activity android:name=".board"/>
     </application>
 
 </manifest>

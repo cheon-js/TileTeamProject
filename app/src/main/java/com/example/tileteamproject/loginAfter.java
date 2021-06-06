@@ -233,6 +233,10 @@ private Context context = this;
                 double Latitude_ = tpoint.getLatitude(); //위도
                 double Longitude_ = tpoint.getLongitude(); //경도
                 tMapView.setCenterPoint(Longitude_, Latitude_);
+                /* 현위치 회전 */
+                tMapView.setCompassMode(true);
+                /*현재 위치 마커 레이더 생성*/
+                tMapView.setSightVisible(true);
             }
         });
         /* 길찾기 버튼 */

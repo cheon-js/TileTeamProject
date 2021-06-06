@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <View
+                android:id="@+id/view_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@android:color/black"
+                android:layout_below="@+id/toolbar"/>
+
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/bm_font"
+                    android:text="어디 있노?"
+                    android:textSize="20sp"
+                    android:textColor="#000000"
+                    android:textStyle="normal" />
+            </androidx.appcompat.widget.Toolbar>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="310dp"
+                android:layout_marginTop="60dp"
+                android:background="@drawable/round_border"
+                android:orientation="horizontal"
+                android:paddingTop="52dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="15dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_setLocStart"
+                            android:layout_width="88dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:clickable="true"
+                            android:text="현위치를 출발지로"
+                            android:textColor="@drawable/text_click"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_moveLoc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:clickable="true"
+                            android:gravity="right"
+                            android:text="현위치 보기"
+                            android:textColor="@drawable/text_click"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="21dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <FrameLayout
+                            android:layout_width="300dp"
+                            android:layout_height="50dp"
+                            android:layout_weight="1">
+
+                            <EditText
+                                android:id="@+id/edit_start"
+                                android:layout_width="320dp"
+                                android:layout_height="45dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/round_border_text"
+                                android:ems="10"
+                                android:focusable="true"
+                                android:focusableInTouchMode="true"
+                                android:hint="출발지를 입력하세요"
+                                android:inputType="textPersonName"
+                                android:paddingLeft="10dp"
+                                android:selectAllOnFocus="true" />
+
+                            <ImageView
+                                android:id="@+id/cancel_st"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_gravity="right|center_vertical"
+                                android:layout_margin="10dp"
+                                android:layout_weight="1"
+                                app:srcCompat="@drawable/cancel" />
+
+                        </FrameLayout>
+
+
+                        <Button
+                            android:id="@+id/btn_start"
+                            android:layout_width="45dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:clickable="true"
+                            android:text="검색"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            app:backgroundTint="#5559b4" />
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="22dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <FrameLayout
+                            android:layout_width="300dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+
+                            <EditText
+                                android:id="@+id/edit_end"
+                                android:layout_width="320dp"
+                                android:layout_height="45dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/round_border_text"
+                                android:ems="10"
+                                android:focusable="true"
+                                android:focusableInTouchMode="true"
+                                android:hint="도착지를 입력하세요"
+                                android:inputType="textPersonName"
+                                android:paddingLeft="10dp"
+                                android:selectAllOnFocus="true" />
+
+                            <ImageView
+                                android:id="@+id/cancel_fin"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_gravity="right|center_vertical"
+                                android:layout_margin="10dp"
+                                android:layout_weight="1"
+                                app:srcCompat="@drawable/cancel" />
+
+                        </FrameLayout>
+
+                        <Button
+                            android:id="@+id/btn_end"
+                            android:layout_width="45dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="검색"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            app:backgroundTint="#5559b4" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <Spinner
+                            android:id="@+id/spinner_field"
+                            android:layout_width="match_parent"
+                            android:layout_height="45dp"
+                            android:background="@drawable/round_border_text"
+                            android:gravity="right"
+                            android:textColor="@color/black"
+                            android:textSize="20sp" />
+
+                        <Button
+                            android:id="@+id/btn_draw"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clickable="true"
+                            android:text="길찾기"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:backgroundTint="#5559b4" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_marginTop="350dp"
+                android:layout_width="match_parent"
+                android:layout_height="371dp">
+
+                <LinearLayout
+                    android:id="@+id/tmap"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <ListView
+                        android:id="@+id/listView"
+                        android:layout_width="match_parent"
+                        android:layout_height="292dp"
+                        android:layout_gravity="left|top"
+                        android:background="#FFFFFFFF" />
+
+                </LinearLayout>
+
+            </FrameLayout>
+
+
+        </RelativeLayout>
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/navi_header"
+        app:menu="@layout/navi_menu" />
+
+</androidx.drawerlayout.widget.DrawerLayout>
+
+</android.widget.LinearLayout>

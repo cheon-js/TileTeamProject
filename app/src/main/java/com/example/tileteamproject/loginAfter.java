@@ -401,8 +401,10 @@ public class loginAfter extends AppCompatActivity  {
                  Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                  startActivity(intent);
               }
-             else if(id == R.id.Sound) {
+             else if(id == R.id.butt) {
                  Toast.makeText(context, title + " : 알림 음량 조절", Toast.LENGTH_SHORT).show();
+                  Intent intent = new Intent(getApplicationContext(), test.class);
+                  startActivity(intent);
              }
              return true;
           }

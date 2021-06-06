@@ -22,20 +22,35 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "GoogleActivity";
     private GoogleSignInClient mGoogleSignInClient;
     private final static int RC_SIGN_IN = 123;
     private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase,ref;
+    private final ArrayList<Integer> list = new ArrayList<>();
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        delete();
         createRequest();
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         findViewById(R.id.btn_googleButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
                 signIn();
             }
         });
-
 
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter.isEnabled()) {
@@ -53,6 +67,44 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(intent, 1);
         }
+
+    }
+    public void delete(){
+        long now = System.currentTimeMillis();
+        Date mDate = new Date(now);
+        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyyMMdd");
+        String time = simpleDate.format(mDate);
+
+
+        GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(this);
+        String delname = signInAccount.getDisplayName();
+        ref = FirebaseDatabase.getInstance().getReference(delname);//delname 손건
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
+                for (DataSnapshot snapshot : datasnapshot.getChildren()) {
+                    String data = snapshot.getKey();//data 값이 위도 123123 경도 123123 String 형식이라 값을 못받음
+                    int data2 = Integer.parseInt(data);
+                    list.add(data2);
+                }
+                int realdata = Integer.parseInt(time);
+                int Mdata = realdata-3;
+
+                Iterator iterator = list.iterator();
+                while (iterator.hasNext()){
+                    int ttime = (int) iterator.next();
+                    if(ttime < Mdata){
+                        String deletedata = Integer.toString(ttime);
+                        mDatabase.child(delname).child(deletedata).removeValue();
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        //mDatabase.child(delname).child(time).removeValue();
+
     }
         private void createRequest() {
             // Configure Google Sign In
@@ -61,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
                     .requestEmail()
                     .build();
 
-            // Build a GoogleSignInClient with the options specified by gso.
             mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         }
 

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/tracker"
+        android:icon="@drawable/place2"
+        android:fontFamily="@font/bm_font"
+        android:textStyle="normal"
+        android:textSize="30dp"
+        android:title="트래커 위치" />
+
+    <item
+        android:id="@+id/main"
+        android:icon="@drawable/home"
+        android:fontFamily="@font/bm_font"
+        android:textStyle="normal"
+        android:textSize="30dp"
+        android:title="길찾기" />
+
+    <item
+        android:id="@+id/location"
+        android:icon="@drawable/nowplace"
+        android:fontFamily="@font/bm_font"
+        android:textStyle="normal"
+        android:textSize="30dp"
+        android:title="현재위치" />
+
+</menu>

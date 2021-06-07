@@ -53,6 +53,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -242,61 +243,9 @@ public class loginAfter extends AppCompatActivity{
 //            }
 //        });
         /* 트래커 위치 확인 설정 버튼 */
-        TextView tvSetLocStart = (TextView)  findViewById(R.id.moveTrc);
-        tvSetLocStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TMapPoint tpoint = tMapView.getLocationPoint();
-//                double Latitude_ = tpoint.getLatitude(); //위도
-//                double Longitude_ = tpoint.getLongitude(); //경도
-                //35.144963769997695, 129.03580991327593
-//                double Latitude_ = 129.03580991327593; //위도
-//                double Longitude_ = 35.144963769997695; //경도
-                double Latitude_ = 35.144963769997695; //위도
-                double Longitude_ = 129.03580991327593; //경도
-                tMapView.setIconVisibility(true);
 
-                tMapView.setCenterPoint(Longitude_, Latitude_); //현위치를 지도 중심
 
-//                LocationManager lm = (LocationManager)getSystemService(Context. LOCATION_SERVICE);
-//                tMapPointStart = tMapView.getLocationPoint(); //출발지에 현위치 좌표 넣기
-//                tMapView.removeAllMarkerItem(); //마커 안보이게
-            }
-        });
-        /* 현위치 보기 버튼 */
-        TextView tvMoveLoc = (TextView)  findViewById(R.id.tv_moveLoc);
-        tvMoveLoc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TMapPoint tpoint = tMapView.getLocationPoint();
-                double Latitude_ = tpoint.getLatitude(); //위도
-                double Longitude_ = tpoint.getLongitude(); //경도
-                tMapView.setCenterPoint(Longitude_, Latitude_);
-                /* 현위치 회전 */
-                tMapView.setCompassMode(true);
-                /*현재 위치 마커 레이더 생성*/
-                tMapView.setSightVisible(true);
-            }
-        });
-        /* 길찾기 버튼 */
-        Button btnDraw = (Button) findViewById(R.id.btn_draw);
-        btnDraw.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                tMapView.removeAllMarkerItem(); //마커 안보이게
-                //출발지 or 도착지가 null일 때
-//                if (tMapPointStart != null && tMapPointEnd != null) {
-                    drawCashPath(tMapPointStart, tMapPointEnd);
-//                } else if (tMapPointStart == null && tMapPointEnd != null) {
-//                    Toast.makeText(getApplicationContext(), "출발지를 입력해주세요", Toast.LENGTH_SHORT).show();
-//                } else if (tMapPointStart != null && tMapPointEnd == null) {
-//                    Toast.makeText(getApplicationContext(), "도착지를 입력해주세요", Toast.LENGTH_SHORT).show();
-//                } else {
-//                    Toast.makeText(getApplicationContext(), "출발지와 도착지를 입력해주세요", Toast.LENGTH_SHORT).show();
-//                }
 
-            }
-        });
 
 //        //listview 클릭 이벤트
 //        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -332,8 +281,6 @@ public class loginAfter extends AppCompatActivity{
                 menuItem.setChecked(true);
                 mDrawerLayout.closeDrawers();
 
-
-
                 int id = menuItem.getItemId();
                 String title = menuItem.getTitle().toString();
 
@@ -352,7 +299,7 @@ public class loginAfter extends AppCompatActivity{
                     startActivity(intent);
                 }
                 else if(id == R.id.butt) {
-                    Toast.makeText(context, title + " : 알림 음량 조절", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "경로 삭제", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getApplicationContext(),test.class);
                     startActivity(intent);
                 }
@@ -779,7 +726,60 @@ public class loginAfter extends AppCompatActivity{
             }
         });
         //mDatabase.child(delname).child(time).removeValue();
+        class ItemSelectedListener implements BottomNavigationView.OnNavigationItemSelectedListener{
 
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                double Latitude_=0;
+                double Longitude_=0;
+                switch(menuItem.getItemId())
+                {
+                    case R.id.tracker:
+                        Toast.makeText(context, "tracker  ", Toast.LENGTH_SHORT).show();
+                        //TMapPoint tpoint = tMapView.getLocationPoint();
+//                double Latitude_ = tpoint.getLatitude(); //위도
+//                double Longitude_ = tpoint.getLongitude(); //경도
+                        //35.144963769997695, 129.03580991327593
+//                double Latitude_ = 129.03580991327593; //위도
+//                double Longitude_ = 35.144963769997695; //경도
+                        Latitude_ = 35.144963769997695; //위도
+                        Longitude_ = 129.03580991327593; //경도
+                        tMapView.setIconVisibility(true);
+
+                        tMapView.setCenterPoint(Longitude_, Latitude_); //현위치를 지도 중심
+
+//                LocationManager lm = (LocationManager)getSystemService(Context. LOCATION_SERVICE);
+//                tMapPointStart = tMapView.getLocationPoint(); //출발지에 현위치 좌표 넣기
+//                tMapView.removeAllMarkerItem(); //마커 안보이게ㅅ
+                        break;
+                    case R.id.main:
+                        Toast.makeText(context, " 길찾기 ", Toast.LENGTH_SHORT).show();
+                        tMapView.removeAllMarkerItem();
+                        drawCashPath(tMapPointStart, tMapPointEnd);
+                        break;
+                    case R.id.location:
+                        Toast.makeText(context, " location ", Toast.LENGTH_SHORT).show();
+                        TMapPoint tpoint = tMapView.getLocationPoint();
+                        Latitude_ = tpoint.getLatitude(); //위도
+                        Longitude_ = tpoint.getLongitude(); //경도
+                        tMapView.setCenterPoint(Longitude_, Latitude_);
+                        /* 현위치 회전 */
+                        tMapView.setCompassMode(true);
+                        /*현재 위치 마커 레이더 생성*/
+                        tMapView.setSightVisible(true);
+                        break;
+
+                }
+                return true;
+            }
+        }
     }
+
+
+
+
+
+
+
 
 }

@@ -6,9 +6,11 @@ import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,6 +23,9 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -164,6 +169,9 @@ public class loginAfter extends AppCompatActivity{
 
         checkBluetooth();
         delete();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        registerReceiver(mBroadcastReceiver, filter);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.navigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(new ItemSelectedListener());
@@ -302,6 +310,31 @@ public class loginAfter extends AppCompatActivity{
 
     } // -- onCreate()
 
+    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            switch (action){
+                case BluetoothDevice.ACTION_ACL_DISCONNECTED:
+                    Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+                    final long[] timings = new long[] {0, 3000, 0, 3000, 0, 3000};
+                    //final int[] amplitudes = new int[] {0, 50, 100, 50, 150};
+
+                    if (Build.VERSION.SDK_INT >= 26) {
+                        vibrator.vibrate(VibrationEffect.createWaveform(timings, 0));
+                    } else {
+                        vibrator.vibrate(10000);
+                    }
+                    break;
+
+            }
+        }
+    };
+
     BluetoothDevice getDeviceFromBondedList(String name) {
         // BluetoothDevice : 페어링 된 기기 목록을 얻어옴.
         BluetoothDevice selectedDevice = null;
@@ -344,7 +377,7 @@ public class loginAfter extends AppCompatActivity{
 
         }catch(Exception e) { // 블루투스 연결 중 오류 발생
             Toast.makeText(getApplicationContext(), "블루투스 연결 중 오류가 발생했습니다.", Toast.LENGTH_LONG).show();
-            finish();  // App 종료
+            //finish();  // App 종료
         }
     }
 
@@ -407,6 +440,7 @@ public class loginAfter extends AppCompatActivity{
                         String fulltime = simpleDate1.format(mDate);
 
                         mDatabase.child(googlename).child(time).child(fulltime).setValue(gps);
+                        SystemClock.sleep(10000);
                     }
 
 
@@ -446,7 +480,7 @@ public class loginAfter extends AppCompatActivity{
 
         if(mPariedDeviceCount == 0 ) { // 페어링된 장치가 없는 경우.
             Toast.makeText(getApplicationContext(), "페어링된 장치가 없습니다.", Toast.LENGTH_LONG).show();
-            finish(); // App 종료.
+            //finish(); // App 종료.
         }
         // 페어링된 장치가 있는 경우.
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -497,7 +531,7 @@ public class loginAfter extends AppCompatActivity{
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if(mBluetoothAdapter == null ) {  // 블루투스 미지원
             Toast.makeText(getApplicationContext(), "기기가 블루투스를 지원하지 않습니다.", Toast.LENGTH_LONG).show();
-            finish();  // 앱종료
+            //finish();  // 앱종료
         }
         else { // 블루투스 지원
             /** isEnable() : 블루투스 모듈이 활성화 되었는지 확인.
@@ -555,7 +589,7 @@ public class loginAfter extends AppCompatActivity{
                 }
                 else if(resultCode == RESULT_CANCELED) { // 블루투스 비활성화 상태 (종료)
                     Toast.makeText(getApplicationContext(), "블루투수를 사용할 수 없어 프로그램을 종료합니다", Toast.LENGTH_LONG).show();
-                    finish();
+                   // finish();
                 }
                 break;
         }
@@ -740,7 +774,7 @@ public class loginAfter extends AppCompatActivity{
                         Bitmap resized = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
                         ArrayList alTMapPoint = new ArrayList();
 
-                        alTMapPoint.add(new TMapPoint(LatF, LongF));//광화문
+                        alTMapPoint.add(new TMapPoint(LatF, LongF));//현재 트래커 좌표
                         //alTMapPoint.add(new TMapPoint(35.144963769997695, 129.03680991327593));//종로3가
                         //alTMapPoint.add(new TMapPoint(35.144963769997695, 129.037809913275935));//종로5가
                         for (int i = 0; i < alTMapPoint.size(); i++) {

@@ -140,6 +140,9 @@ public class loginAfter extends AppCompatActivity{
     GPSTread thread = new GPSTread();
     GoogleSignInAccount signInAccount;
     String googlename;
+    String gps = null;
+    double LatF;
+    float LongF;
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -355,7 +358,7 @@ public class loginAfter extends AppCompatActivity{
             int bytes;
             byte[] buffer = new byte[1024];
             String targetStr = "GPGGA";
-            String gps = null;
+
 
 
 
@@ -388,8 +391,8 @@ public class loginAfter extends AppCompatActivity{
                         String Long1 = Long.substring(0, 3);
                         String Long2 = Long.substring(3);
 
-                        double LatF = Double.parseDouble(Lat1) + Double.parseDouble(Lat2)/60;
-                        float LongF = Float.parseFloat(Long1) + Float.parseFloat(Long2)/60;
+                        LatF = Double.parseDouble(Lat1) + Double.parseDouble(Lat2)/60;
+                        LongF = Float.parseFloat(Long1) + Float.parseFloat(Long2)/60;
 
                         String wedo = Double.toString(LatF);
                         String kyengdo = Float.toString(LongF);
@@ -725,43 +728,10 @@ public class loginAfter extends AppCompatActivity{
                 /* 트래커 위치 확인 설정 버튼 */
                 case R.id.tracker:
                     if(check%2==0){
-                        String getwl = signInAccount.getDisplayName();//로그인한 사용자 이름
 
-                        mDatabase = FirebaseDatabase.getInstance().getReference(getwl);
-                        long now = System.currentTimeMillis();
-                        Date mDate = new Date(now);
-                        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyyMMdd");
-                        String time = simpleDate.format(mDate);//time = 20120607
-                        mDatabase.addChildEventListener(new ChildEventListener() {
-                            @Override
-                            public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
-                                //String data = (String) snapshot.getValue();
-                                //Log.e("test", "test : " + data);
-                            }
 
-                            @Override
-                            public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
-
-                            }
-
-                            @Override
-                            public void onChildRemoved(DataSnapshot snapshot) {
-
-                            }
-
-                            @Override
-                            public void onChildMoved(DataSnapshot snapshot, String previousChildName) {
-
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError error) {
-
-                            }
-                        });
                         tMapView.removeAllMarkerItem();
                         //TMapPoint tpoint = tMapView.getLocationPoint();
-
 
                         tMapView.setIconVisibility(true);
 
@@ -770,9 +740,9 @@ public class loginAfter extends AppCompatActivity{
                         Bitmap resized = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
                         ArrayList alTMapPoint = new ArrayList();
 
-                        alTMapPoint.add(new TMapPoint(35.144963769997695, 129.03580991327593));//광화문
-                        alTMapPoint.add(new TMapPoint(35.144963769997695, 129.03680991327593));//종로3가
-                        alTMapPoint.add(new TMapPoint(35.144963769997695, 129.037809913275935));//종로5가
+                        alTMapPoint.add(new TMapPoint(LatF, LongF));//광화문
+                        //alTMapPoint.add(new TMapPoint(35.144963769997695, 129.03680991327593));//종로3가
+                        //alTMapPoint.add(new TMapPoint(35.144963769997695, 129.037809913275935));//종로5가
                         for (int i = 0; i < alTMapPoint.size(); i++) {
                             //for(ArrayList  add : alTMapPoint ){
                             TMapMarkerItem markerItem1 = new TMapMarkerItem();

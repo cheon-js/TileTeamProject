@@ -1,11 +1,5 @@
 package com.example.tileteamproject;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -17,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
@@ -26,36 +21,31 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.provider.MediaStore;
-import android.text.Layout;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -64,13 +54,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.skt.Tmap.TMapData;
 import com.skt.Tmap.TMapGpsManager;
 import com.skt.Tmap.TMapMarkerItem;
-import com.skt.Tmap.TMapMarkerItem2;
 import com.skt.Tmap.TMapPOIItem;
 import com.skt.Tmap.TMapPoint;
 import com.skt.Tmap.TMapPolyLine;
 import com.skt.Tmap.TMapView;
-
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -79,11 +66,9 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -100,6 +85,7 @@ public class loginAfter extends AppCompatActivity{
     private String[] item;
     private int routeNum;
     private int choiceRoute = 0; //경로 종류 선택받음
+    private int check = 0;
     /**
      - 0: 교통최적+추천(기본값)
      - 1: 교통최적+무료우선
@@ -243,7 +229,7 @@ public class loginAfter extends AppCompatActivity{
 //                listView.setVisibility(View.GONE); //listview 숨기기
 //            }
 //        });
-        /* 트래커 위치 확인 설정 버튼 */
+
 
 
 
@@ -733,43 +719,108 @@ public class loginAfter extends AppCompatActivity{
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-            double Latitude_=0;
-            double Longitude_=0;
+
             switch(menuItem.getItemId())
             {
+                /* 트래커 위치 확인 설정 버튼 */
                 case R.id.tracker:
-                    Toast.makeText(context, "tracker  ", Toast.LENGTH_SHORT).show();
-                    //TMapPoint tpoint = tMapView.getLocationPoint();
-//                double Latitude_ = tpoint.getLatitude(); //위도
-//                double Longitude_ = tpoint.getLongitude(); //경도
-                    //35.144963769997695, 129.03580991327593
-//                double Latitude_ = 129.03580991327593; //위도
-//                double Longitude_ = 35.144963769997695; //경도
-                    Latitude_ = 35.144963769997695; //위도
-                    Longitude_ = 129.03580991327593; //경도
-                    tMapView.setIconVisibility(true);
 
-                    tMapView.setCenterPoint(Longitude_, Latitude_); //현위치를 지도 중심
+                        String getwl = signInAccount.getDisplayName();//로그인한 사용자 이름
 
-//                LocationManager lm = (LocationManager)getSystemService(Context. LOCATION_SERVICE);
-//                tMapPointStart = tMapView.getLocationPoint(); //출발지에 현위치 좌표 넣기
-//                tMapView.removeAllMarkerItem(); //마커 안보이게ㅅ
+                        mDatabase = FirebaseDatabase.getInstance().getReference(getwl);
+                        long now = System.currentTimeMillis();
+                        Date mDate = new Date(now);
+                        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyyMMdd");
+                        String time = simpleDate.format(mDate);//time = 20120607
+                        mDatabase.addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
+                                //String data = (String) snapshot.getValue();
+                                //Log.e("test", "test : " + data);
+                            }
+
+                            @Override
+                            public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
+
+                            }
+
+                            @Override
+                            public void onChildRemoved(DataSnapshot snapshot) {
+
+                            }
+
+                            @Override
+                            public void onChildMoved(DataSnapshot snapshot, String previousChildName) {
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError error) {
+
+                            }
+                        });
+                        tMapView.removeAllMarkerItem();
+                        //TMapPoint tpoint = tMapView.getLocationPoint();
+
+                        double Latitude_ = 35.144963769997695; //위도
+                        double Longitude_ = 129.03580991327593; //경도
+                        tMapView.setIconVisibility(true);
+
+                        tMapView.setCenterPoint(Longitude_, Latitude_); //현위치를 지도 중심
+                        final Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.cancel);
+                        Bitmap resized = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
+                        ArrayList alTMapPoint = new ArrayList();
+
+                        alTMapPoint.add(new TMapPoint(35.144963769997695, 129.03580991327593));//광화문
+                        alTMapPoint.add(new TMapPoint(35.144963769997695, 129.03680991327593));//종로3가
+                        alTMapPoint.add(new TMapPoint(35.144963769997695, 129.037809913275935));//종로5가
+                        for (int i = 0; i < alTMapPoint.size(); i++) {
+                            //for(ArrayList  add : alTMapPoint ){
+                            TMapMarkerItem markerItem1 = new TMapMarkerItem();
+                            // 마커 아이콘 지정
+                            markerItem1.setIcon(resized);
+                            // 마커의 좌표 지정
+                            markerItem1.setTMapPoint((TMapPoint) alTMapPoint.get(i));
+
+                            //지도에 마커 추가
+                            tMapView.addMarkerItem("markerItem" + i, markerItem1);
+
+                        }
                     break;
                 case R.id.main:
+                    if (check % 2 == 0){
                     Toast.makeText(context, " 길찾기 ", Toast.LENGTH_SHORT).show();
                     tMapView.removeAllMarkerItem();
+
                     drawCashPath(tMapPointStart, tMapPointEnd);
+                    check ++;
+                        //Log.e("test","Test"+check);
+                    }else{
+                        check++;
+                        tMapView.removeAllMarkerItem();
+                        tMapView.removeTMapPath();
+                        //Log.e("test","Test"+check);
+                    }
                     break;
                 case R.id.location:
-                    Toast.makeText(context, " location ", Toast.LENGTH_SHORT).show();
-                    TMapPoint tpoint = tMapView.getLocationPoint();
-                    Latitude_ = tpoint.getLatitude(); //위도
-                    Longitude_ = tpoint.getLongitude(); //경도
-                    tMapView.setCenterPoint(Longitude_, Latitude_);
-                    /* 현위치 회전 */
-                    tMapView.setCompassMode(true);
-                    /*현재 위치 마커 레이더 생성*/
-                    tMapView.setSightVisible(true);
+                    if (check % 2 == 0) {
+                        Toast.makeText(context, " location ", Toast.LENGTH_SHORT).show();
+                        TMapPoint tpoint = tMapView.getLocationPoint();
+                        Latitude_ = tpoint.getLatitude(); //위도
+                        Longitude_ = tpoint.getLongitude(); //경도
+                        tMapView.setCenterPoint(Longitude_, Latitude_);
+                        /* 현위치 회전 */
+                        tMapView.setCompassMode(true);
+                        /*현재 위치 마커 레이더 생성*/
+                        tMapView.setSightVisible(true);
+                        check++;
+                    }else{
+                        check++;
+                        /* 현위치 회전 */
+                        tMapView.setCompassMode(false);
+                        /*현재 위치 마커 레이더 생성*/
+                        tMapView.setSightVisible(false);
+                    }
                     break;
 
             }

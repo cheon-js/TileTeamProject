@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -116,10 +117,10 @@ public class loginAfter extends AppCompatActivity{
     private boolean startBtnState = false;
     private boolean endBtnState = false;
 //    private TMapPoint tMapPointStart = null;
-//    private TMapPoint tMapPointEnd = null;
-    private TMapPoint tMapPointStart = new TMapPoint(35.14491598554919, 129.03571818298877);//영상물 등급위원회
-    private TMapPoint tMapPointEnd = new TMapPoint(35.15222715129512, 129.03291744152403);//영화의 전당
-//35.15222715129512, 129.03291744152403 스타팰리스
+    private TMapPoint tMapPointEnd = null;
+    private TMapPoint tMapPointStart = new TMapPoint(35.147303, 129.034140);//tpqmsdlffpqms
+    //private TMapPoint tMapPointEnd = new TMapPoint(35.15222715129512, 129.03291744152403);//영화의 전당
+//35.152215129512, 129.03291744152403 스타팰리스
 //35.14491598554919, 129.03571818298877 정보관
     private DrawerLayout mDrawerLayout;
     private Context context = this;
@@ -440,7 +441,7 @@ public class loginAfter extends AppCompatActivity{
                         String fulltime = simpleDate1.format(mDate);
 
                         mDatabase.child(googlename).child(time).child(fulltime).setValue(gps);
-                        SystemClock.sleep(10000);
+                        SystemClock.sleep(20000);
                     }
 
 
@@ -508,7 +509,7 @@ public class loginAfter extends AppCompatActivity{
                 // TODO Auto-generated method stub
                 if(item == mPariedDeviceCount) { // 연결할 장치를 선택하지 않고 '취소' 를 누른 경우.
                     Toast.makeText(getApplicationContext(), "연결할 장치를 선택하지 않았습니다.", Toast.LENGTH_LONG).show();
-                    finish();
+                    //finish();
                 }
                 else { // 연결할 장치를 선택한 경우, 선택한 장치와 연결을 시도함.
                     connectToSelectedDevice(items[item].toString());
@@ -699,7 +700,7 @@ public class loginAfter extends AppCompatActivity{
         return address.getAddressLine(0).toString() + "\n";
     }
 
-    //뒤로가기 - listview 지우기, 앱 종료
+  /*  //뒤로가기 - listview 지우기, 앱 종료
     public void onBackPressed() {
         //super.onBackPressed(); // 기존 뒤로 가기 버튼의 기능을 막기 위해 주석 처리 또는 삭제
 
@@ -714,7 +715,7 @@ public class loginAfter extends AppCompatActivity{
             finish();
         }
     }
-
+*/
     public void delete(){
         long now = System.currentTimeMillis();
         Date mDate = new Date(now);
@@ -799,8 +800,9 @@ public class loginAfter extends AppCompatActivity{
                     if (check % 2 == 0){
                     Toast.makeText(context, " 길찾기 ", Toast.LENGTH_SHORT).show();
                     tMapView.removeAllMarkerItem();
-
+                    tMapPointEnd = new TMapPoint(LatF, LongF);
                     drawCashPath(tMapPointStart, tMapPointEnd);
+
                     check ++;
                         //Log.e("test","Test"+check);
                     }else{

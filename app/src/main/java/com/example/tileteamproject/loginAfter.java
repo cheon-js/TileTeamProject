@@ -353,6 +353,8 @@ public class loginAfter extends AppCompatActivity{
                 }
                 else if(id == R.id.butt) {
                     Toast.makeText(context, title + " : 알림 음량 조절", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(),test.class);
+                    startActivity(intent);
                 }
                 return true;
             }
@@ -463,7 +465,7 @@ public class loginAfter extends AppCompatActivity{
                         long now = System.currentTimeMillis();
                         Date mDate = new Date(now);
                         SimpleDateFormat simpleDate = new SimpleDateFormat("yyyyMMdd") ;
-                        SimpleDateFormat simpleDate1 = new SimpleDateFormat("yyyyMMddHHMMSS");
+                        SimpleDateFormat simpleDate1 = new SimpleDateFormat(""+System.currentTimeMillis());
                         String time = simpleDate.format(mDate);
                         String fulltime = simpleDate1.format(mDate);
 

@@ -724,7 +724,7 @@ public class loginAfter extends AppCompatActivity{
             {
                 /* 트래커 위치 확인 설정 버튼 */
                 case R.id.tracker:
-
+                    if(check%2==0){
                         String getwl = signInAccount.getDisplayName();//로그인한 사용자 이름
 
                         mDatabase = FirebaseDatabase.getInstance().getReference(getwl);
@@ -762,11 +762,10 @@ public class loginAfter extends AppCompatActivity{
                         tMapView.removeAllMarkerItem();
                         //TMapPoint tpoint = tMapView.getLocationPoint();
 
-                        double Latitude_ = 35.144963769997695; //위도
-                        double Longitude_ = 129.03580991327593; //경도
+
                         tMapView.setIconVisibility(true);
 
-                        tMapView.setCenterPoint(Longitude_, Latitude_); //현위치를 지도 중심
+
                         final Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.cancel);
                         Bitmap resized = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
                         ArrayList alTMapPoint = new ArrayList();
@@ -784,8 +783,13 @@ public class loginAfter extends AppCompatActivity{
 
                             //지도에 마커 추가
                             tMapView.addMarkerItem("markerItem" + i, markerItem1);
-
                         }
+                        check ++;
+                    }else{
+                        check++;
+                        tMapView.removeAllMarkerItem();
+                        tMapView.removeTMapPath();
+                    }
                     break;
                 case R.id.main:
                     if (check % 2 == 0){
@@ -806,8 +810,8 @@ public class loginAfter extends AppCompatActivity{
                     if (check % 2 == 0) {
                         Toast.makeText(context, " location ", Toast.LENGTH_SHORT).show();
                         TMapPoint tpoint = tMapView.getLocationPoint();
-                        Latitude_ = tpoint.getLatitude(); //위도
-                        Longitude_ = tpoint.getLongitude(); //경도
+                        double Latitude_ = tpoint.getLatitude(); //위도
+                        double Longitude_ = tpoint.getLongitude(); //경도
                         tMapView.setCenterPoint(Longitude_, Latitude_);
                         /* 현위치 회전 */
                         tMapView.setCompassMode(true);

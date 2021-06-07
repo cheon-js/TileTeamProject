@@ -163,7 +163,6 @@ public class loginAfter extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-
         InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE); //키보드 내리기
 
         layout = (LinearLayout) findViewById(R.id.tmap);
@@ -177,6 +176,8 @@ public class loginAfter extends AppCompatActivity{
         checkBluetooth();
         delete();
 
+        BottomNavigationView bottomNavigationView = findViewById(R.id.navigationView);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new ItemSelectedListener());
 
 
 
@@ -726,56 +727,55 @@ public class loginAfter extends AppCompatActivity{
             }
         });
         //mDatabase.child(delname).child(time).removeValue();
-        class ItemSelectedListener implements BottomNavigationView.OnNavigationItemSelectedListener{
+    }
 
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                double Latitude_=0;
-                double Longitude_=0;
-                switch(menuItem.getItemId())
-                {
-                    case R.id.tracker:
-                        Toast.makeText(context, "tracker  ", Toast.LENGTH_SHORT).show();
-                        //TMapPoint tpoint = tMapView.getLocationPoint();
+    class ItemSelectedListener implements BottomNavigationView.OnNavigationItemSelectedListener{
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            double Latitude_=0;
+            double Longitude_=0;
+            switch(menuItem.getItemId())
+            {
+                case R.id.tracker:
+                    Toast.makeText(context, "tracker  ", Toast.LENGTH_SHORT).show();
+                    //TMapPoint tpoint = tMapView.getLocationPoint();
 //                double Latitude_ = tpoint.getLatitude(); //위도
 //                double Longitude_ = tpoint.getLongitude(); //경도
-                        //35.144963769997695, 129.03580991327593
+                    //35.144963769997695, 129.03580991327593
 //                double Latitude_ = 129.03580991327593; //위도
 //                double Longitude_ = 35.144963769997695; //경도
-                        Latitude_ = 35.144963769997695; //위도
-                        Longitude_ = 129.03580991327593; //경도
-                        tMapView.setIconVisibility(true);
+                    Latitude_ = 35.144963769997695; //위도
+                    Longitude_ = 129.03580991327593; //경도
+                    tMapView.setIconVisibility(true);
 
-                        tMapView.setCenterPoint(Longitude_, Latitude_); //현위치를 지도 중심
+                    tMapView.setCenterPoint(Longitude_, Latitude_); //현위치를 지도 중심
 
 //                LocationManager lm = (LocationManager)getSystemService(Context. LOCATION_SERVICE);
 //                tMapPointStart = tMapView.getLocationPoint(); //출발지에 현위치 좌표 넣기
 //                tMapView.removeAllMarkerItem(); //마커 안보이게ㅅ
-                        break;
-                    case R.id.main:
-                        Toast.makeText(context, " 길찾기 ", Toast.LENGTH_SHORT).show();
-                        tMapView.removeAllMarkerItem();
-                        drawCashPath(tMapPointStart, tMapPointEnd);
-                        break;
-                    case R.id.location:
-                        Toast.makeText(context, " location ", Toast.LENGTH_SHORT).show();
-                        TMapPoint tpoint = tMapView.getLocationPoint();
-                        Latitude_ = tpoint.getLatitude(); //위도
-                        Longitude_ = tpoint.getLongitude(); //경도
-                        tMapView.setCenterPoint(Longitude_, Latitude_);
-                        /* 현위치 회전 */
-                        tMapView.setCompassMode(true);
-                        /*현재 위치 마커 레이더 생성*/
-                        tMapView.setSightVisible(true);
-                        break;
+                    break;
+                case R.id.main:
+                    Toast.makeText(context, " 길찾기 ", Toast.LENGTH_SHORT).show();
+                    tMapView.removeAllMarkerItem();
+                    drawCashPath(tMapPointStart, tMapPointEnd);
+                    break;
+                case R.id.location:
+                    Toast.makeText(context, " location ", Toast.LENGTH_SHORT).show();
+                    TMapPoint tpoint = tMapView.getLocationPoint();
+                    Latitude_ = tpoint.getLatitude(); //위도
+                    Longitude_ = tpoint.getLongitude(); //경도
+                    tMapView.setCenterPoint(Longitude_, Latitude_);
+                    /* 현위치 회전 */
+                    tMapView.setCompassMode(true);
+                    /*현재 위치 마커 레이더 생성*/
+                    tMapView.setSightVisible(true);
+                    break;
 
-                }
-                return true;
             }
+            return true;
         }
     }
-
-
 
 
 

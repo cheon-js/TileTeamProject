@@ -151,7 +151,10 @@ public class loginAfter extends AppCompatActivity{
     OutputStream mOutputStream = null;
     BufferedReader mInputStream = null;
     GPSTread thread = new GPSTread();
-    beginListenGPSData gpshandler;
+    GoogleSignInAccount signInAccount;
+    String googlename;
+
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
 
@@ -167,7 +170,8 @@ public class loginAfter extends AppCompatActivity{
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        gpshandler = new beginListenGPSData();
+        signInAccount = GoogleSignIn.getLastSignedInAccount(this);
+        googlename = signInAccount.getDisplayName();
 
         checkBluetooth();
         delete();
@@ -407,6 +411,7 @@ public class loginAfter extends AppCompatActivity{
 
     class GPSTread extends Thread{
 
+
         @Override
         public void run() {
             //readBufferPosition = 0;                 // 버퍼 내 수신 문자 저장 위치.
@@ -415,6 +420,7 @@ public class loginAfter extends AppCompatActivity{
             byte[] buffer = new byte[1024];
             String targetStr = "GPGGA";
             String gps = null;
+
 
 
             while(!Thread.currentThread().isInterrupted()){
@@ -451,28 +457,38 @@ public class loginAfter extends AppCompatActivity{
 
                         String wedo = Double.toString(LatF);
                         String kyengdo = Float.toString(LongF);
-                        gps = wedo + " ," + kyengdo;
+                        gps = wedo + "," + kyengdo;
                         System.out.println(gps);
+                        mDatabase = FirebaseDatabase.getInstance().getReference();
+                        long now = System.currentTimeMillis();
+                        Date mDate = new Date(now);
+                        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyyMMdd") ;
+                        SimpleDateFormat simpleDate1 = new SimpleDateFormat("yyyyMMddHHMMSS");
+                        String time = simpleDate.format(mDate);
+                        String fulltime = simpleDate1.format(mDate);
 
+                        mDatabase.child(googlename).child(time).child(fulltime).setValue(gps);
                     }
 
 
                 }catch (Exception e) {
                     e.printStackTrace();
                 }
-                Message msg = new Message();
+               /* Message msg = new Message();
                 msg.what = 0;
                 msg.obj = gps;
-                gpshandler.sendMessage(msg);
+                gpshandler.sendMessage(msg);*/
             }
 
         }
     }
 
-    class beginListenGPSData extends Handler {
+    /*class beginListenGPSData extends Handler {
+
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
+
 
             switch (msg.what){
                 case 0:
@@ -480,7 +496,7 @@ public class loginAfter extends AppCompatActivity{
 
             }
         }
-    }
+    }*/
 
     // 블루투스 지원하며 활성 상태인 경우.
     void selectDevice() {

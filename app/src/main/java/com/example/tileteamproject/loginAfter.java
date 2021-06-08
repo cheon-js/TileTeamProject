@@ -71,6 +71,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -86,36 +87,16 @@ public class loginAfter extends AppCompatActivity{
     private double lon;
     private double realdistance = 0; //거리값
     private static String AppKey = "l7xx2b1c5cd91b914c2c9c80aab1109ae5d3";
-    private long backKeyPressedTime = 0; // 마지막으로 뒤로 가기 버튼을 눌렀던 시간 저장
-    private Toast toast; // 첫 번째 뒤로 가기 버튼을 누를 때 표시
-    private String[] item;
-    private int routeNum;
     private int choiceRoute = 0; //경로 종류 선택받음
     private int check = 0;
-    /**
-     - 0: 교통최적+추천(기본값)
-     - 1: 교통최적+무료우선
-     - 2: 교통최적+최소시간
-     - 3: 교통최적+초보
-     - 4: 교통최적+고속도로우선
-     - 10: 최단거리+유/무료
-     - 12: 이륜차도로우선 (일반도로가 없는 경우 자동차 전용도로로 안내 할 수 있습니다.)
-     - 19: 교통최적+어린이보호구역 회피
-    */
-    ListView listView;
-    EditText editStart;
-    EditText editEnd;
-    TextView textView;
-    Spinner spinner;
+
+
     ArrayAdapter<POI> mAdapter;
-    String keyword;
     LinearLayout layout;
 
     private double currentLatitude;
     private double currentlongitude;
     private boolean locationState = true; //현위치로 이동 여부
-    private boolean startBtnState = false;
-    private boolean endBtnState = false;
 //    private TMapPoint tMapPointStart = null;
     private TMapPoint tMapPointEnd = null;
     private TMapPoint tMapPointStart = new TMapPoint(35.147303, 129.034140);//tpqmsdlffpqms
@@ -148,7 +129,9 @@ public class loginAfter extends AppCompatActivity{
     String googlename;
     String gps = null;
     double LatF;
+    double laV;
     float LongF;
+    float loV;
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -242,35 +225,6 @@ public class loginAfter extends AppCompatActivity{
 //            }
 //        });
 
-
-
-
-
-//        //listview 클릭 이벤트
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-//                POI poi = (POI) listView.getItemAtPosition(position);
-//                moveMap(poi.item.getPOIPoint().getLatitude(), poi.item.getPOIPoint().getLongitude());
-//                lat = poi.item.getPOIPoint().getLatitude();
-//                lon = poi.item.getPOIPoint().getLongitude();
-//                //Log.e("선택된 좌표", "lat : " + String.valueOf(lat) + " lon : " +lon);
-//
-//                if (startBtnState == true) { //출발지 선택
-//                    tMapPointStart = new TMapPoint(poi.item.getPOIPoint().getLatitude(), poi.item.getPOIPoint().getLongitude());
-//                    startBtnState = false;
-//                    editStart.setText(poi.toString()); //장소명 setText
-//                    editStart.clearFocus(); //포커스 없앰
-//                } else if (endBtnState == true) { //도착지 선택
-//                    tMapPointEnd = new TMapPoint(poi.item.getPOIPoint().getLatitude(), poi.item.getPOIPoint().getLongitude());
-//                    endBtnState = false;
-//                    editEnd.setText(poi.toString()); //장소명 setText
-//                    editEnd.clearFocus(); //포커스 없앰
-//                }
-//
-//                listView.setVisibility(View.GONE); //주소 선택 후 listview 안보이게
-//            }
-//        });
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -426,11 +380,15 @@ public class loginAfter extends AppCompatActivity{
                         String Long2 = Long.substring(3);
 
                         LatF = Double.parseDouble(Lat1) + Double.parseDouble(Lat2)/60;
+
                         LongF = Float.parseFloat(Long1) + Float.parseFloat(Long2)/60;
 
                         String wedo = Double.toString(LatF);
+
+                       // String wedo2 = wedo.substring(0,7);
                         String kyengdo = Float.toString(LongF);
-                        gps = wedo + "," + kyengdo;
+                       // String kyeongdo2 = kyengdo.substring(0,7);
+                        gps = wedo +","+ kyengdo;
                         System.out.println(gps);
                         mDatabase = FirebaseDatabase.getInstance().getReference();
                         long now = System.currentTimeMillis();
@@ -441,7 +399,7 @@ public class loginAfter extends AppCompatActivity{
                         String fulltime = simpleDate1.format(mDate);
 
                         mDatabase.child(googlename).child(time).child(fulltime).setValue(gps);
-                        SystemClock.sleep(20000);
+                        SystemClock.sleep(10000);
                     }
 
 
@@ -757,38 +715,74 @@ public class loginAfter extends AppCompatActivity{
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-
+            String name = signInAccount.getDisplayName();
+            final Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.cancel);
+            Bitmap resized = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
             switch(menuItem.getItemId())
             {
                 /* 트래커 위치 확인 설정 버튼 */
                 case R.id.tracker:
                     if(check%2==0){
 
+                        ref = FirebaseDatabase.getInstance().getReference(name);
+                        ref.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+                                Object o = snapshot.getValue();
+                                String dbAll = o.toString();
+                                //String [] all=null;
+                                //Log.e("test",""+a);
+                                String [] strArray = dbAll.split("=");
 
-                        tMapView.removeAllMarkerItem();
-                        //TMapPoint tpoint = tMapView.getLocationPoint();
+                                for(int i=2;i<strArray.length;i++) {
+                                    if(40< strArray[i].length() && strArray[i].length()<43) {
+                                        String laValue = strArray[i].substring(0,17); //위도 파싱
+                                        String loValue = strArray[i].substring(18,27); //경도 파싱
+                                        //Log.e("test", "" + strArray[i]+ "/////////"+c+"//"+b);
+                                        laV = Double.parseDouble(laValue);
+                                        loV = Float.parseFloat(loValue);
+                                        System.out.println(laV + "asdasd"+loV);
+                                        tMapView.removeAllMarkerItem();
+                                        //TMapPoint tpoint = tMapView.getLocationPoint();
 
-                        tMapView.setIconVisibility(true);
+                                        tMapView.setIconVisibility(true);
+
+                                        ArrayList alTMapPoint = new ArrayList();
+                                        for(int k=0; k<strArray.length;k++) {
+                                            alTMapPoint.add(new TMapPoint(laV, loV));//현재 트래커 좌표
+                                            alTMapPoint.add(new TMapPoint(laV, loV));
+                                            alTMapPoint.add(new TMapPoint(laV, loV));
+                                            alTMapPoint.add(new TMapPoint(laV, loV));
+                                        }
+                                        //alTMapPoint.add(new TMapPoint(35.144963769997695, 129.03680991327593));//종로3가
+                                        //alTMapPoint.add(new TMapPoint(35.144963769997695, 129.037809913275935));//종로5가
+                                        for (int j = 0; j < alTMapPoint.size(); j++) {
+                                            //for(ArrayList  add : alTMapPoint ){
+                                            TMapMarkerItem markerItem1 = new TMapMarkerItem();
+                                            // 마커 아이콘 지정
+                                            markerItem1.setIcon(resized);
+                                            // 마커의 좌표 지정
+                                            markerItem1.setTMapPoint((TMapPoint) alTMapPoint.get(j));
+
+                                            //지도에 마커 추가
+                                            tMapView.addMarkerItem("markerItem" + j, markerItem1);
+                                        }
+                                    }
+                                    //String b = strArray[i].substring(10,18);
+
+                                }
+
+                                //
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError error) {
+
+                            }
+                        });
 
 
-                        final Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.cancel);
-                        Bitmap resized = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
-                        ArrayList alTMapPoint = new ArrayList();
 
-                        alTMapPoint.add(new TMapPoint(LatF, LongF));//현재 트래커 좌표
-                        //alTMapPoint.add(new TMapPoint(35.144963769997695, 129.03680991327593));//종로3가
-                        //alTMapPoint.add(new TMapPoint(35.144963769997695, 129.037809913275935));//종로5가
-                        for (int i = 0; i < alTMapPoint.size(); i++) {
-                            //for(ArrayList  add : alTMapPoint ){
-                            TMapMarkerItem markerItem1 = new TMapMarkerItem();
-                            // 마커 아이콘 지정
-                            markerItem1.setIcon(resized);
-                            // 마커의 좌표 지정
-                            markerItem1.setTMapPoint((TMapPoint) alTMapPoint.get(i));
-
-                            //지도에 마커 추가
-                            tMapView.addMarkerItem("markerItem" + i, markerItem1);
-                        }
                         check ++;
                     }else{
                         check++;

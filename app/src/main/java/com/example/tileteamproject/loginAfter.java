@@ -80,7 +80,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class loginAfter extends AppCompatActivity{
-
+    ArrayList alTMapPoint = new ArrayList();
     private TMapGpsManager tMapGps = null;
     private TMapView tMapView;
     private double lat;
@@ -152,6 +152,7 @@ public class loginAfter extends AppCompatActivity{
         googlename = signInAccount.getDisplayName();
 
         checkBluetooth();
+        Trakerlocation();
         delete();
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
@@ -715,8 +716,8 @@ public class loginAfter extends AppCompatActivity{
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-            String name = signInAccount.getDisplayName();
-            final Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.cancel);
+
+            final Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.custom_poi_marker_selected);
             Bitmap resized = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
             switch(menuItem.getItemId())
             {
@@ -724,65 +725,17 @@ public class loginAfter extends AppCompatActivity{
                 case R.id.tracker:
                     if(check%2==0){
 
-                        ref = FirebaseDatabase.getInstance().getReference(name);
-                        ref.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot snapshot) {
-                                Object o = snapshot.getValue();
-                                String dbAll = o.toString();
-                                //String [] all=null;
-                                //Log.e("test",""+a);
-                                String [] strArray = dbAll.split("=");
+                        for (int j = 0; j < alTMapPoint.size(); j++) {
+                            //for(ArrayList  add : alTMapPoint ){
+                            TMapMarkerItem markerItem1 = new TMapMarkerItem();
+                            // 마커 아이콘 지정
+                            markerItem1.setIcon(resized);
+                            // 마커의 좌표 지정
+                            markerItem1.setTMapPoint((TMapPoint) alTMapPoint.get(j));
 
-                                for(int i=2;i<strArray.length;i++) {
-                                    if(40< strArray[i].length() && strArray[i].length()<43) {
-                                        String laValue = strArray[i].substring(0,17); //위도 파싱
-                                        String loValue = strArray[i].substring(18,27); //경도 파싱
-                                        //Log.e("test", "" + strArray[i]+ "/////////"+c+"//"+b);
-                                        laV = Double.parseDouble(laValue);
-                                        loV = Float.parseFloat(loValue);
-                                        System.out.println(laV + "asdasd"+loV);
-                                        tMapView.removeAllMarkerItem();
-                                        //TMapPoint tpoint = tMapView.getLocationPoint();
-
-                                        tMapView.setIconVisibility(true);
-
-                                        ArrayList alTMapPoint = new ArrayList();
-                                        for(int k=0; k<strArray.length;k++) {
-                                            alTMapPoint.add(new TMapPoint(laV, loV));//현재 트래커 좌표
-                                            alTMapPoint.add(new TMapPoint(laV, loV));
-                                            alTMapPoint.add(new TMapPoint(laV, loV));
-                                            alTMapPoint.add(new TMapPoint(laV, loV));
-                                        }
-                                        //alTMapPoint.add(new TMapPoint(35.144963769997695, 129.03680991327593));//종로3가
-                                        //alTMapPoint.add(new TMapPoint(35.144963769997695, 129.037809913275935));//종로5가
-                                        for (int j = 0; j < alTMapPoint.size(); j++) {
-                                            //for(ArrayList  add : alTMapPoint ){
-                                            TMapMarkerItem markerItem1 = new TMapMarkerItem();
-                                            // 마커 아이콘 지정
-                                            markerItem1.setIcon(resized);
-                                            // 마커의 좌표 지정
-                                            markerItem1.setTMapPoint((TMapPoint) alTMapPoint.get(j));
-
-                                            //지도에 마커 추가
-                                            tMapView.addMarkerItem("markerItem" + j, markerItem1);
-                                        }
-                                    }
-                                    //String b = strArray[i].substring(10,18);
-
-                                }
-
-                                //
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError error) {
-
-                            }
-                        });
-
-
-
+                            //지도에 마커 추가
+                            tMapView.addMarkerItem("markerItem" + j, markerItem1);
+                        }
                         check ++;
                     }else{
                         check++;
@@ -791,9 +744,15 @@ public class loginAfter extends AppCompatActivity{
                     }
                     break;
                 case R.id.main:
+
                     if (check % 2 == 0){
+
                     Toast.makeText(context, " 길찾기 ", Toast.LENGTH_SHORT).show();
                     tMapView.removeAllMarkerItem();
+                        TMapPoint tpoint = tMapView.getLocationPoint();
+                        double Latitude_ = tpoint.getLatitude(); //위도
+                        double Longitude_ = tpoint.getLongitude(); //경도
+                    tMapPointStart = new TMapPoint(Longitude_, Latitude_);
                     tMapPointEnd = new TMapPoint(LatF, LongF);
                     drawCashPath(tMapPointStart, tMapPointEnd);
 
@@ -831,7 +790,56 @@ public class loginAfter extends AppCompatActivity{
             return true;
         }
     }
+    public void Trakerlocation(){
+        String name = signInAccount.getDisplayName();
+        ref = FirebaseDatabase.getInstance().getReference(name);
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                Object o = snapshot.getValue();
+                String dbAll = o.toString();
+                //String [] all=null;
+                //Log.e("test",""+a);
+                String [] strArray = dbAll.split("=");
 
+                for(int i=2;i<strArray.length;i++) {
+                    if(40< strArray[i].length() && strArray[i].length()<42) {
+                        String laValue = strArray[i].substring(0,17); //위도 파싱
+                        String loValue = strArray[i].substring(18,26); //경도 파싱
+                        Log.e("test", "" + strArray[i]+ "/////////"+laValue+"//"+loValue);
+                        laV = Double.parseDouble(laValue);
+                        loV = Float.parseFloat(loValue);
+                        System.out.println(laV + "asdasd"+loV);
+                        tMapView.removeAllMarkerItem();
+                        //TMapPoint tpoint = tMapView.getLocationPoint();
+
+                        tMapView.setIconVisibility(true);
+
+
+                        alTMapPoint.add(new TMapPoint(laV, loV));//현재 트래커 좌표
+                        alTMapPoint.add(new TMapPoint(laV, loV));//현재 트래커 좌표
+
+//                                        for(int k=0; k<strArray.length;k++) {
+//                                            alTMapPoint.add(new TMapPoint(laV, loV));//현재 트래커 좌표
+//                                        }
+                        //alTMapPoint.add(new TMapPoint(35.144963769997695, 129.03680991327593));//종로3가
+                        //alTMapPoint.add(new TMapPoint(35.144963769997695, 129.037809913275935));//종로5가
+
+                    }
+                    //String b = strArray[i].substring(10,18);
+
+                }
+
+                //
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+
+    }
 
 
 
